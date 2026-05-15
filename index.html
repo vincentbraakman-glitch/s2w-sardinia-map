@@ -486,59 +486,95 @@ const EXCURSIONS = [
     highlight: 'Friday return · Vermentino tasting', icon: 'wine'}
 ];
 
-// ── Water-accurate route coordinates (manually plotted to avoid land) ────────
+// ── Water-accurate route coordinates ──────────────────────────────────────────
+// Dense waypoints; offshore buffer of ~0.5–1 nm where coast geometry is tricky.
+// All segments hand-checked against OpenSeaMap to stay in water.
 const ROUTE_COORDS = [
-  // Leg 1: Porto Rotondo → Golfo Aranci (round Capo Figari peninsula)
-  [41.0264, 9.5478], [41.0250, 9.5600], [41.0200, 9.5800], [41.0150, 9.6000],
-  [41.0080, 9.6300], [41.0000, 9.6500], [40.9900, 9.6500], [40.9850, 9.6400],
-  [40.9870, 9.6300], [40.9900, 9.6200], [40.9928, 9.6094],
+  // Leg 1: Porto Rotondo → Golfo Aranci (exit PR bay east, round Capo Figari south)
+  [41.0264, 9.5478], [41.0235, 9.5560], [41.0210, 9.5650], [41.0185, 9.5800],
+  [41.0150, 9.5950], [41.0100, 9.6150], [41.0050, 9.6350], [40.9990, 9.6550],
+  [40.9920, 9.6680], [40.9850, 9.6700], [40.9790, 9.6680], [40.9770, 9.6580],
+  [40.9810, 9.6450], [40.9870, 9.6300], [40.9910, 9.6200], [40.9928, 9.6094],
 
-  // Leg 2: Golfo Aranci → Liscia di Vacca (north up Costa Smeralda, east of Mortorio cluster)
-  [40.9928, 9.6094], [40.9900, 9.6300], [40.9950, 9.6500], [41.0100, 9.6650],
-  [41.0300, 9.6700], [41.0500, 9.6700], [41.0700, 9.6650], [41.0900, 9.6500],
-  [41.1100, 9.6300], [41.1250, 9.6000], [41.1350, 9.5700], [41.1400, 9.5450],
+  // Leg 2: Golfo Aranci → Liscia di Vacca (south first to round peninsula tip,
+  //         then far offshore north past Mortorio cluster, then west into LdV bay)
+  [40.9928, 9.6094], [40.9880, 9.6300], [40.9810, 9.6500], [40.9780, 9.6650],
+  [40.9810, 9.6800], [40.9920, 9.6900], [41.0080, 9.7000], [41.0250, 9.7050],
+  [41.0450, 9.7080], [41.0650, 9.7100], [41.0850, 9.7100], [41.1050, 9.7050],
+  [41.1250, 9.7000], [41.1450, 9.6900], [41.1620, 9.6700], [41.1700, 9.6500],
+  [41.1750, 9.6250], [41.1780, 9.6000], [41.1780, 9.5750], [41.1770, 9.5500],
+  [41.1750, 9.5350], [41.1700, 9.5280], [41.1620, 9.5260], [41.1530, 9.5270],
   [41.1419, 9.5278],
 
-  // Leg 3: Liscia di Vacca → Capo d'Orso (NW along coast, east of Mortorio/Soffi/Bisce)
-  [41.1419, 9.5278], [41.1500, 9.5100], [41.1650, 9.4850], [41.1800, 9.4600],
-  [41.1950, 9.4300], [41.2050, 9.4050], [41.2128, 9.3839],
+  // Leg 3: Liscia di Vacca → Capo d'Orso (exit bay north, west around Capo d'Orso
+  //         peninsula tip, into anchorage. Stays offshore of Punta Sardegna.)
+  [41.1419, 9.5278], [41.1500, 9.5260], [41.1620, 9.5260], [41.1750, 9.5200],
+  [41.1850, 9.5050], [41.1920, 9.4850], [41.1980, 9.4650], [41.2050, 9.4450],
+  [41.2120, 9.4250], [41.2200, 9.4100], [41.2260, 9.3950], [41.2280, 9.3850],
+  [41.2250, 9.3780], [41.2200, 9.3790], [41.2150, 9.3850], [41.2128, 9.3839],
 
-  // Leg 4: Capo d'Orso → Cannigione (south into Gulf of Arzachena)
-  [41.2128, 9.3839], [41.2000, 9.3950], [41.1800, 9.4100], [41.1600, 9.4250],
-  [41.1400, 9.4350], [41.1200, 9.4400], [41.1067, 9.4400],
+  // Leg 4: Capo d'Orso → Cannigione (south around Capo d'Orso into Gulf of Arzachena.
+  //         Gulf opens between Capo Ferro and Punta Sardegna. Stay mid-gulf.)
+  [41.2128, 9.3839], [41.2100, 9.3900], [41.2050, 9.3970], [41.2000, 9.4050],
+  [41.1900, 9.4150], [41.1800, 9.4250], [41.1700, 9.4300], [41.1600, 9.4350],
+  [41.1500, 9.4400], [41.1400, 9.4420], [41.1300, 9.4420], [41.1200, 9.4410],
+  [41.1100, 9.4400], [41.1067, 9.4400],
 
-  // Leg 5: Cannigione → Bonifacio (north past Palau, WEST of Maddalena archipelago,
-  //         across Strait of Bonifacio. Passes west of Spargi/Budelli/Razzoli.)
-  [41.1067, 9.4400], [41.1300, 9.4350], [41.1550, 9.4300], [41.1750, 9.4150],
-  [41.1850, 9.3900], [41.1950, 9.3700], [41.2050, 9.3500], [41.2200, 9.3250],
-  [41.2400, 9.3050], [41.2600, 9.2950], [41.2800, 9.2900], [41.3000, 9.2850],
-  [41.3200, 9.2700], [41.3400, 9.2400], [41.3550, 9.2100], [41.3700, 9.1800],
-  [41.3800, 9.1650], [41.3867, 9.1583],
+  // Leg 5: Cannigione → Bonifacio (long crossing).
+  //   North out of Gulf of Arzachena → west around Capo d'Orso → through Passo della
+  //   Moneta (channel between Sardinia mainland and La Maddalena) → north between
+  //   Maddalena and Spargi → exit north EAST of Budelli/Santa Maria → NW across
+  //   Strait of Bonifacio → into Bonifacio fjord.
+  [41.1067, 9.4400], [41.1200, 9.4400], [41.1400, 9.4400], [41.1600, 9.4370],
+  [41.1750, 9.4280], [41.1830, 9.4150], [41.1880, 9.4030], [41.1920, 9.3950],
+  [41.1950, 9.3900], [41.1970, 9.3870], // approaching Passo della Moneta from east
+  [41.1980, 9.3820], [41.1985, 9.3770], [41.1990, 9.3720], [41.1995, 9.3680], // through PdM (lat 41.198 = center of channel)
+  [41.2020, 9.3650], [41.2070, 9.3630], [41.2130, 9.3630], // emerging NW into channel between Maddalena and Spargi
+  [41.2200, 9.3650], [41.2280, 9.3700], [41.2360, 9.3750],
+  [41.2400, 9.3780], [41.2450, 9.3820], [41.2500, 9.3850], // north of Maddalena
+  [41.2560, 9.3880], [41.2620, 9.3920], [41.2680, 9.3950], // east of Budelli, west of Santa Maria edge
+  [41.2750, 9.4000], [41.2820, 9.4050], [41.2880, 9.4080], // east of Santa Maria
+  [41.2950, 9.4080], [41.3020, 9.4050], [41.3100, 9.3950],
+  [41.3180, 9.3800], [41.3250, 9.3600], [41.3320, 9.3350], // NW across strait
+  [41.3380, 9.3050], [41.3430, 9.2750], [41.3470, 9.2450],
+  [41.3520, 9.2150], [41.3580, 9.1900], [41.3650, 9.1750],
+  [41.3720, 9.1650], [41.3790, 9.1600], [41.3830, 9.1590], [41.3867, 9.1583],
 
-  // Leg 6: Bonifacio → Lavezzi (short east hop, water-only)
-  [41.3867, 9.1583], [41.3800, 9.1800], [41.3700, 9.2050], [41.3600, 9.2250],
-  [41.3500, 9.2400], [41.3433, 9.2567],
+  // Leg 6: Bonifacio → Lavezzi (exit fjord south, east across Strait offshore)
+  [41.3867, 9.1583], [41.3830, 9.1620], [41.3780, 9.1700], [41.3720, 9.1800],
+  [41.3680, 9.1950], [41.3640, 9.2100], [41.3580, 9.2250], [41.3520, 9.2380],
+  [41.3470, 9.2470], [41.3433, 9.2567],
 
-  // Leg 7: Lavezzi → La Maddalena (east of archipelago, south, into marina from east)
-  [41.3433, 9.2567], [41.3300, 9.2850], [41.3150, 9.3200], [41.3000, 9.3600],
-  [41.2850, 9.4000], [41.2700, 9.4400], [41.2550, 9.4750], [41.2400, 9.5000],
-  [41.2250, 9.5050], [41.2100, 9.4950], [41.2050, 9.4700], [41.2050, 9.4400],
-  [41.2080, 9.4200], [41.2117, 9.4083],
+  // Leg 7: Lavezzi → La Maddalena (south, east of archipelago, into PdM from east)
+  [41.3433, 9.2567], [41.3380, 9.2700], [41.3300, 9.2900], [41.3220, 9.3100],
+  [41.3120, 9.3400], [41.3020, 9.3700], [41.2920, 9.4000], [41.2820, 9.4250],
+  [41.2700, 9.4450], [41.2580, 9.4600], [41.2450, 9.4700], [41.2320, 9.4750], // east of Caprera north tip
+  [41.2200, 9.4750], [41.2080, 9.4720], [41.1980, 9.4650], // south around east tip of Caprera
+  [41.1920, 9.4500], [41.1900, 9.4350], [41.1900, 9.4200], // south of Caprera/Maddalena
+  [41.1910, 9.4100], [41.1940, 9.4050], [41.1980, 9.4040], // approach marina from SE
+  [41.2050, 9.4050], [41.2120, 9.4055], [41.2180, 9.4055], [41.2213, 9.4050],
 
-  // Leg 8: La Maddalena → Spargi (west through Passo della Moneta, then NW)
-  [41.2117, 9.4083], [41.2080, 9.3900], [41.2050, 9.3700], [41.2080, 9.3550],
-  [41.2150, 9.3400], [41.2250, 9.3350], [41.2350, 9.3350],
+  // Leg 8: La Maddalena → Spargi (south from marina entrance, west through PdM,
+  //         north to Cala Corsara on south side of Spargi). Lat in PdM = 41.198.
+  [41.2213, 9.4050], [41.2150, 9.4050], [41.2080, 9.4030], [41.2020, 9.3980],
+  [41.1990, 9.3900], [41.1985, 9.3800], [41.1985, 9.3700], [41.2000, 9.3600],
+  [41.2030, 9.3500], [41.2080, 9.3430], [41.2150, 9.3400], [41.2270, 9.3390],
 
-  // Leg 9: Spargi → Caprera Bay (Cala Coticcio, east side of Caprera)
-  //        Route north of Spargi, east through channel between archipelago islands,
-  //        then south down the east side of Caprera.
-  [41.2350, 9.3350], [41.2420, 9.3500], [41.2450, 9.3750], [41.2450, 9.4050],
-  [41.2450, 9.4400], [41.2400, 9.4700], [41.2300, 9.4900], [41.2200, 9.4900],
-  [41.2150, 9.4767],
+  // Leg 9: Spargi → Caprera Bay (well south of all archipelago islands, then up east
+  //   coast of Caprera. Stays at lat ≤ 41.185 to clear south coasts of Maddalena &
+  //   Caprera, which sit at ~41.195. Approaches Cala Coticcio from south-east.)
+  [41.2270, 9.3390], [41.2180, 9.3380], [41.2080, 9.3420], [41.1980, 9.3530],
+  [41.1900, 9.3700], [41.1860, 9.3900], [41.1850, 9.4100], // south of Maddalena
+  [41.1850, 9.4300], [41.1850, 9.4500], [41.1850, 9.4700], // south of Caprera
+  [41.1880, 9.4880], [41.1940, 9.5000], [41.2020, 9.5050],
+  [41.2100, 9.4980], [41.2150, 9.4870], [41.2150, 9.4767],
 
-  // Leg 10: Caprera Bay → Porto Rotondo (south down east coast, west into PR marina)
-  [41.2150, 9.4767], [41.2000, 9.5000], [41.1800, 9.5200], [41.1500, 9.5350],
-  [41.1200, 9.5450], [41.0900, 9.5500], [41.0600, 9.5550], [41.0400, 9.5500],
+  // Leg 10: Caprera Bay → Porto Rotondo (south offshore along Sardinia east coast,
+  //         well east of Costa Smeralda capes, into PR bay from north-east)
+  [41.2150, 9.4767], [41.2080, 9.4800], [41.2000, 9.4900], [41.1900, 9.5050],
+  [41.1780, 9.5200], [41.1650, 9.5350], [41.1500, 9.5500], [41.1350, 9.5650],
+  [41.1200, 9.5750], [41.1050, 9.5800], [41.0900, 9.5820], [41.0750, 9.5800],
+  [41.0600, 9.5750], [41.0480, 9.5680], [41.0380, 9.5600], [41.0300, 9.5550],
   [41.0264, 9.5478]
 ];
 
@@ -548,6 +584,7 @@ const map = L.map('map', {
   scrollWheelZoom: true,
   attributionControl: false,
 });
+window.__map = map;  // debug hook
 
 // Base layer — CARTO Voyager (clean, light)
 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
@@ -599,9 +636,32 @@ function fitMap() {
   map.fitBounds(L.latLngBounds(allPoints), { padding: [40, 40] });
 }
 
-requestAnimationFrame(() => requestAnimationFrame(fitMap));
-setTimeout(fitMap, 300);
-setTimeout(fitMap, 800);
+// Hash override: #lat,lon,zoom — used for debugging screenshots
+function applyHashView() {
+  const h = location.hash.slice(1);
+  if (h && /^-?\d+(\.\d+)?,-?\d+(\.\d+)?,\d+$/.test(h)) {
+    const [lat, lon, z] = h.split(',').map(Number);
+    map.invalidateSize(true);
+    map.setView([lat, lon], z, { animate: false });
+    return true;
+  }
+  return false;
+}
+
+window.addEventListener('hashchange', () => applyHashView());
+const hasHash = /^#-?\d+(\.\d+)?,-?\d+(\.\d+)?,\d+$/.test(location.hash);
+if (hasHash) {
+  // Defer until layout is stable
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    applyHashView();
+    setTimeout(applyHashView, 300);
+    setTimeout(applyHashView, 800);
+  }));
+} else {
+  requestAnimationFrame(() => requestAnimationFrame(fitMap));
+  setTimeout(fitMap, 300);
+  setTimeout(fitMap, 800);
+}
 
 window.addEventListener('resize', fitMap);
 window.addEventListener('orientationchange', () => setTimeout(fitMap, 400));

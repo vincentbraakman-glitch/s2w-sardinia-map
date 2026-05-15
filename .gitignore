@@ -1,1 +1,9 @@
 .vercel
+node_modules/
+package.json
+package-lock.json
+screenshots/
+debug.js
+screenshot.js
+shot-overview.png
+.claude/
