@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en" style="height:-webkit-fill-available;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sardinia &amp; Corsica Sailing Route — Porto Rotondo to the Maddalena Archipelago</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Lato', system-ui, sans-serif;
+    background: #f5f0e8;
+    color: #3a2e22;
+    height: 100vh;
+    height: 100dvh;
+    min-height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .map-header {
+    background: #1a2f3a;
+    color: #f5f0e8;
+    padding: 14px 24px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-shrink: 0;
+    z-index: 1000;
+  }
+  .map-header h1 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #f5f0e8;
+  }
+  .map-header .subtitle {
+    font-size: 0.8rem;
+    color: #c9bfa8;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .map-wrapper {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .sidebar {
+    width: 320px;
+    min-width: 260px;
+    background: #fffdf7;
+    border-right: 1px solid #e5ddd0;
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-section-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #9a8470;
+    padding: 16px 20px 8px;
+    border-bottom: 1px solid #f0ebe0;
+  }
+
+  .stop-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0ebe0;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .stop-item:hover { background: #fdf6ec; }
+  .stop-item.active {
+    background: #fdf6ec;
+    border-left: 3px solid #c4892a;
+  }
+
+  .stop-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #c4892a;
+    border: 2.5px solid #fff;
+    box-shadow: 0 0 0 1.5px #c4892a;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .excursion-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #5c7a5e;
+    border: 2.5px solid #fff;
+    box-shadow: 0 0 0 1.5px #5c7a5e;
+    color: #fff;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .stop-content { flex: 1; min-width: 0; }
+  .stop-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2a1f14;
+    line-height: 1.2;
+  }
+  .stop-highlight {
+    font-size: 0.72rem;
+    color: #c4892a;
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .stop-desc {
+    font-size: 0.8rem;
+    color: #6a5a4a;
+    line-height: 1.5;
+    margin-top: 6px;
+    display: none;
+  }
+  .stop-item.active .stop-desc { display: block; }
+
+  .excursion-section {
+    border-top: 2px solid #e5ddd0;
+    margin-top: auto;
+  }
+
+  #map {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #d4e3ee;
+    z-index: 1;
+  }
+
+  .numbered-marker {
+    background: #c4892a;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 2px #c4892a, 0 2px 8px rgba(0,0,0,0.35);
+    border-radius: 50%;
+    color: #ffffff;
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .numbered-marker:hover,
+  .numbered-marker.active {
+    transform: scale(1.2);
+    z-index: 1000 !important;
+  }
+
+  .excursion-marker {
+    background: #5c7a5e;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 2px #5c7a5e, 0 2px 8px rgba(0,0,0,0.3);
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .excursion-marker:hover,
+  .excursion-marker.active {
+    transform: scale(1.2);
+    z-index: 1000 !important;
+  }
+
+  .leaflet-popup-content-wrapper {
+    background: #fffdf7;
+    border: 1px solid #e5ddd0;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    padding: 0;
+  }
+  .leaflet-popup-content {
+    margin: 0;
+    padding: 16px 18px;
+    min-width: 220px;
+    max-width: 280px;
+  }
+  .popup-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2a1f14;
+    margin-bottom: 4px;
+  }
+  .popup-highlight {
+    font-size: 0.7rem;
+    color: #c4892a;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .popup-desc {
+    font-size: 0.82rem;
+    color: #5a4a3a;
+    line-height: 1.55;
+  }
+  .leaflet-popup-tip { background: #fffdf7; }
+
+  .map-tint {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 200;
+    mix-blend-mode: multiply;
+    background: rgba(244, 230, 200, 0.12);
+  }
+
+  .map-legend {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 253, 247, 0.95);
+    border: 1px solid #e5ddd0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    z-index: 500;
+    font-size: 0.76rem;
+    color: #5a4a3a;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .legend-item:last-child { margin-bottom: 0; }
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    flex-shrink: 0;
+  }
+  .legend-line {
+    width: 20px;
+    height: 3px;
+    flex-shrink: 0;
+    border-radius: 2px;
+  }
+
+  .drawer-handle { display: none; }
+
+  @media (max-width: 640px) {
+    body {
+      height: 100vh;
+      height: 100dvh;
+      min-height: -webkit-fill-available;
+      overflow: hidden;
+    }
+
+    .map-header {
+      padding: 8px 16px;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .map-header h1 { font-size: 1.05rem; }
+    .map-header .subtitle { font-size: 0.7rem; }
+
+    .map-wrapper {
+      flex: 1;
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      width: 100%;
+      min-width: unset;
+      height: 52px;
+      max-height: 62%;
+      border-right: none;
+      border-top: 1px solid #e5ddd0;
+      border-bottom: none;
+      border-radius: 14px 14px 0 0;
+      box-shadow: 0 -3px 20px rgba(0,0,0,0.13);
+      z-index: 900;
+      overflow: hidden;
+      transition: height 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+      flex-shrink: unset;
+    }
+    .sidebar.drawer-open {
+      height: 62%;
+      overflow-y: auto;
+    }
+
+    .drawer-handle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      height: 52px;
+      flex-shrink: 0;
+      cursor: pointer;
+      background: #fffdf7;
+      border-radius: 14px 14px 0 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .drawer-pill-wrap {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .drawer-pill {
+      width: 36px;
+      height: 4px;
+      background: #ccc;
+      border-radius: 2px;
+    }
+    .drawer-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #3a2e22;
+      letter-spacing: 0.03em;
+    }
+    .drawer-arrow {
+      font-size: 0.85rem;
+      color: #9a8470;
+      transition: transform 0.3s;
+    }
+    .drawer-open .drawer-arrow {
+      transform: rotate(180deg);
+    }
+
+    .map-container-mobile {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+    }
+
+    #map {
+      position: absolute !important;
+      top: 0; left: 0;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .map-legend {
+      top: 10px;
+      bottom: auto;
+      right: 8px;
+      padding: 8px 10px;
+      font-size: 0.68rem;
+    }
+
+    .leaflet-popup-content {
+      min-width: 180px;
+      max-width: 220px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="map-header">
+  <h1>Sardinia &amp; Corsica — Maddalena Archipelago</h1>
+  <span class="subtitle">7-day sailing route</span>
+</div>
+
+<div class="map-wrapper">
+  <div class="sidebar" id="sidebar">
+    <div class="drawer-handle" id="drawerHandle">
+      <div class="drawer-pill-wrap"><div class="drawer-pill"></div></div>
+      <span class="drawer-label">Stops &amp; Excursions</span>
+      <span class="drawer-arrow" id="drawerArrow">↑</span>
+    </div>
+    <div class="sidebar-section-title">Sailing Stops</div>
+    <div class="excursion-section">
+      <div class="sidebar-section-title">Land Excursions</div>
+    </div>
+  </div>
+
+  <div class="map-container-mobile" style="position:relative; flex:1;">
+    <div id="map"></div>
+    <div class="map-tint"></div>
+    <div class="map-legend" id="map-legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#c4892a; box-shadow:0 0 0 1px #c4892a;"></div>
+        <span>Sailing anchorage</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#5c7a5e; box-shadow:0 0 0 1px #5c7a5e;"></div>
+        <span>Land excursion</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-line" style="background:#c4892a;"></div>
+        <span>Sailing route</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────────
+const STOPS = [
+  {num: 1, name: 'Porto Rotondo', lat: 41.0264, lon: 9.5478,
+    desc: "Your home base. Board the Bali 5.4 in this elegant marina, stow your kit, and settle into the rhythm of the sea. Twenty-five minutes from Olbia airport — by lunch you're on the water.",
+    highlight: 'Embarkation · Bali 5.4 base'},
+  {num: 2, name: 'Golfo Aranci', lat: 40.9928, lon: 9.6094,
+    desc: "An easy first sail south to a quiet bay tucked behind the headland. Chef's opening dinner on board as the sun drops. The week begins here, slowly, on purpose.",
+    highlight: 'Anchor night 1 · Opening dinner'},
+  {num: 3, name: 'Liscia di Vacca', lat: 41.1419, lon: 9.5278,
+    desc: "Costa Smeralda's quietest stretch of white sand, ringed by granite and juniper. Beach yoga at dawn, swim before breakfast. The kind of morning that recalibrates everything.",
+    highlight: 'Anchor night 2 · Beach yoga'},
+  {num: 4, name: "Capo d'Orso", lat: 41.2128, lon: 9.3839,
+    desc: "Day stop at the bear-shaped granite cape near Palau. Saltwater pools at the Thalasso resort, lunch on the terrace, an afternoon spa session before sailing back to Cannigione for the night.",
+    highlight: 'Day stop · Thalasso spa & lunch'},
+  {num: 5, name: 'Cannigione', lat: 41.1067, lon: 9.4400,
+    desc: "Anchor in the deep gulf of Arzachena. A working fishing town with a quayside dinner spot the locals trust — fresh catch, no menu in English, no rush.",
+    highlight: 'Anchor night 3 · Quayside dinner'},
+  {num: 6, name: 'Bonifacio', lat: 41.3867, lon: 9.1583,
+    desc: "The crossing into Corsica — a long sail across the Strait of Bonifacio with the citadel rising from chalk cliffs in the distance. Marina mooring directly beneath the old town. Walk the haute ville at sunset.",
+    highlight: 'Marina night 4 · Citadel walk'},
+  {num: 7, name: 'Lavezzi Islands', lat: 41.3433, lon: 9.2567,
+    desc: "A granite archipelago floating in lagoon-clear water between Corsica and Sardinia. Drop anchor over white sand, snorkel through the reserve, lunch on the foredeck. One of the loveliest stops of the week.",
+    highlight: 'Day stop · Snorkel & swim'},
+  {num: 8, name: 'La Maddalena', lat: 41.2117, lon: 9.4083,
+    desc: "Marina mooring in the main town of the archipelago. Walk the pastel waterfront, a proper Sardinian dinner ashore — pasta with bottarga, local Vermentino, gelato on the way back to the boat.",
+    highlight: 'Marina night 5 · Town dinner'},
+  {num: 9, name: 'Spargi', lat: 41.2350, lon: 9.3350,
+    desc: "Cala Corsara — one of the most photographed bays in Italy. Pink-tinged granite, water the colour of mint. Beach yoga in the morning, paddleboard in the cala, anchor for the night.",
+    highlight: 'Anchor night 6 · Beach yoga'},
+  {num: 10, name: 'Caprera Bay', lat: 41.2150, lon: 9.4767,
+    desc: "Cala Coticcio — 'Little Tahiti'. The farewell anchorage, on-board feast with everything the chef has been saving: bottarga, suckling pig, mirto. Last swim under the stars before sailing back at dawn.",
+    highlight: 'Anchor night 7 · Farewell feast'}
+];
+
+const EXCURSIONS = [
+  {name: 'Blue Zone Cooking Workshop', lat: 40.9230, lon: 9.4980,
+    desc: "A morning with a Sardinian nonna in Olbia. Learn to make malloreddus, fregola, and culurgiones the way they've been made for five generations. One of the five places on earth where people regularly live past 100 — the food is the reason.",
+    highlight: 'Blue Zone · Pre-board', icon: 'food'},
+  {name: 'Thalasso Spa Capo d\'Orso', lat: 41.2050, lon: 9.3700,
+    desc: "Saltwater pools cut into the granite at one of the most considered spa resorts on the island. Sauna, massage, lunch on the terrace looking across to La Maddalena. Half a day, full reset.",
+    highlight: 'Spa day · Saltwater pools', icon: 'spa'},
+  {name: 'Bonifacio Citadel', lat: 41.3900, lon: 9.1500,
+    desc: "Climb the King of Aragon's staircase — 187 steps cut into the chalk cliff. Walk the haute ville's narrow lanes, an espresso in the place overlooking the strait, a glass of Patrimonio at sunset.",
+    highlight: 'Corsica · Old town walk', icon: 'castle'},
+  {name: 'Cantina Murales Wine Tasting', lat: 40.9280, lon: 9.4950,
+    desc: "Friday morning before flights — a tasting at a family-run Vermentino producer outside Olbia. Three wines, local cheese, the story of how the vines came back after the fires. A proper Sardinian farewell.",
+    highlight: 'Friday return · Vermentino tasting', icon: 'wine'}
+];
+
+// ── Water-accurate route coordinates (manually plotted to avoid land) ────────
+const ROUTE_COORDS = [
+  // Leg 1: Porto Rotondo → Golfo Aranci (round Capo Figari peninsula)
+  [41.0264, 9.5478], [41.0250, 9.5600], [41.0200, 9.5800], [41.0150, 9.6000],
+  [41.0080, 9.6300], [41.0000, 9.6500], [40.9900, 9.6500], [40.9850, 9.6400],
+  [40.9870, 9.6300], [40.9900, 9.6200], [40.9928, 9.6094],
+
+  // Leg 2: Golfo Aranci → Liscia di Vacca (north up Costa Smeralda, east of Mortorio cluster)
+  [40.9928, 9.6094], [40.9900, 9.6300], [40.9950, 9.6500], [41.0100, 9.6650],
+  [41.0300, 9.6700], [41.0500, 9.6700], [41.0700, 9.6650], [41.0900, 9.6500],
+  [41.1100, 9.6300], [41.1250, 9.6000], [41.1350, 9.5700], [41.1400, 9.5450],
+  [41.1419, 9.5278],
+
+  // Leg 3: Liscia di Vacca → Capo d'Orso (NW along coast, east of Mortorio/Soffi/Bisce)
+  [41.1419, 9.5278], [41.1500, 9.5100], [41.1650, 9.4850], [41.1800, 9.4600],
+  [41.1950, 9.4300], [41.2050, 9.4050], [41.2128, 9.3839],
+
+  // Leg 4: Capo d'Orso → Cannigione (south into Gulf of Arzachena)
+  [41.2128, 9.3839], [41.2000, 9.3950], [41.1800, 9.4100], [41.1600, 9.4250],
+  [41.1400, 9.4350], [41.1200, 9.4400], [41.1067, 9.4400],
+
+  // Leg 5: Cannigione → Bonifacio (north past Palau, WEST of Maddalena archipelago,
+  //         across Strait of Bonifacio. Passes west of Spargi/Budelli/Razzoli.)
+  [41.1067, 9.4400], [41.1300, 9.4350], [41.1550, 9.4300], [41.1750, 9.4150],
+  [41.1850, 9.3900], [41.1950, 9.3700], [41.2050, 9.3500], [41.2200, 9.3250],
+  [41.2400, 9.3050], [41.2600, 9.2950], [41.2800, 9.2900], [41.3000, 9.2850],
+  [41.3200, 9.2700], [41.3400, 9.2400], [41.3550, 9.2100], [41.3700, 9.1800],
+  [41.3800, 9.1650], [41.3867, 9.1583],
+
+  // Leg 6: Bonifacio → Lavezzi (short east hop, water-only)
+  [41.3867, 9.1583], [41.3800, 9.1800], [41.3700, 9.2050], [41.3600, 9.2250],
+  [41.3500, 9.2400], [41.3433, 9.2567],
+
+  // Leg 7: Lavezzi → La Maddalena (east of archipelago, south, into marina from east)
+  [41.3433, 9.2567], [41.3300, 9.2850], [41.3150, 9.3200], [41.3000, 9.3600],
+  [41.2850, 9.4000], [41.2700, 9.4400], [41.2550, 9.4750], [41.2400, 9.5000],
+  [41.2250, 9.5050], [41.2100, 9.4950], [41.2050, 9.4700], [41.2050, 9.4400],
+  [41.2080, 9.4200], [41.2117, 9.4083],
+
+  // Leg 8: La Maddalena → Spargi (west through Passo della Moneta, then NW)
+  [41.2117, 9.4083], [41.2080, 9.3900], [41.2050, 9.3700], [41.2080, 9.3550],
+  [41.2150, 9.3400], [41.2250, 9.3350], [41.2350, 9.3350],
+
+  // Leg 9: Spargi → Caprera Bay (Cala Coticcio, east side of Caprera)
+  //        Route north of Spargi, east through channel between archipelago islands,
+  //        then south down the east side of Caprera.
+  [41.2350, 9.3350], [41.2420, 9.3500], [41.2450, 9.3750], [41.2450, 9.4050],
+  [41.2450, 9.4400], [41.2400, 9.4700], [41.2300, 9.4900], [41.2200, 9.4900],
+  [41.2150, 9.4767],
+
+  // Leg 10: Caprera Bay → Porto Rotondo (south down east coast, west into PR marina)
+  [41.2150, 9.4767], [41.2000, 9.5000], [41.1800, 9.5200], [41.1500, 9.5350],
+  [41.1200, 9.5450], [41.0900, 9.5500], [41.0600, 9.5550], [41.0400, 9.5500],
+  [41.0264, 9.5478]
+];
+
+// ── Map init ──────────────────────────────────────────────────────────────────
+const map = L.map('map', {
+  zoomControl: true,
+  scrollWheelZoom: true,
+  attributionControl: false,
+});
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  subdomains: 'abcd',
+  maxZoom: 19,
+}).addTo(map);
+
+const routeLine = L.polyline(ROUTE_COORDS, {
+  color: '#c4892a',
+  weight: 3,
+  opacity: 0.85,
+  smoothFactor: 1.5,
+}).addTo(map);
+
+// ── Mobile bottom drawer ──────────────────────────────────────────────────────
+const drawerHandle = document.getElementById('drawerHandle');
+const drawerArrow  = document.getElementById('drawerArrow');
+const sidebarEl    = document.getElementById('sidebar');
+let drawerOpen = false;
+
+function setDrawer(open) {
+  drawerOpen = open;
+  sidebarEl.classList.toggle('drawer-open', open);
+  drawerArrow.style.transform = open ? 'rotate(180deg)' : '';
+}
+
+drawerHandle.addEventListener('click', () => setDrawer(!drawerOpen));
+
+function collapseDrawer() {
+  if (window.innerWidth <= 640) setDrawer(false);
+}
+
+// ── Fit bounds ─────────────────────────────────────────────────────────────────
+const allPoints = [
+  ...STOPS.map(s => [s.lat, s.lon]),
+  ...EXCURSIONS.map(e => [e.lat, e.lon]),
+];
+
+function fitMap() {
+  map.invalidateSize(true);
+  map.fitBounds(L.latLngBounds(allPoints), { padding: [40, 40] });
+}
+
+requestAnimationFrame(() => requestAnimationFrame(fitMap));
+setTimeout(fitMap, 300);
+setTimeout(fitMap, 800);
+
+window.addEventListener('resize', fitMap);
+window.addEventListener('orientationchange', () => setTimeout(fitMap, 400));
+
+// ── State ──────────────────────────────────────────────────────────────────────
+let activeStop = null;
+let activeExcursion = null;
+const markerMap = {};
+const excursionMarkerMap = {};
+const sidebarItemMap = {};
+const sidebarExcursionMap = {};
+
+function excursionEmoji(icon) {
+  if (icon === 'food') return '🍴';
+  if (icon === 'spa') return '♨';
+  if (icon === 'castle') return '🏰';
+  if (icon === 'wine') return '🍷';
+  return '◆';
+}
+
+function createNumberedIcon(num, isActive) {
+  return L.divIcon({
+    className: '',
+    html: `<div class="numbered-marker${isActive ? ' active' : ''}" style="width:36px;height:36px;">${num}</div>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+    popupAnchor: [0, -22],
+  });
+}
+
+function createExcursionIcon(icon, isActive) {
+  return L.divIcon({
+    className: '',
+    html: `<div class="excursion-marker${isActive ? ' active' : ''}" style="width:36px;height:36px;">${excursionEmoji(icon)}</div>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+    popupAnchor: [0, -22],
+  });
+}
+
+function popupContent(item) {
+  return `
+    <div class="popup-name">${item.name}</div>
+    <div class="popup-highlight">${item.highlight}</div>
+    <div class="popup-desc">${item.desc}</div>
+  `;
+}
+
+function activateStop(num) {
+  if (activeStop !== null) {
+    const prev = sidebarItemMap[activeStop];
+    if (prev) prev.classList.remove('active');
+    const prevMarker = markerMap[activeStop];
+    if (prevMarker) prevMarker.setIcon(createNumberedIcon(activeStop, false));
+  }
+  if (activeExcursion !== null) {
+    const prev = sidebarExcursionMap[activeExcursion];
+    if (prev) prev.classList.remove('active');
+    const prevMarker = excursionMarkerMap[activeExcursion];
+    if (prevMarker) prevMarker.setIcon(createExcursionIcon(EXCURSIONS.find(e=>e.name===activeExcursion)?.icon, false));
+    activeExcursion = null;
+  }
+
+  if (activeStop === num) { activeStop = null; return; }
+  activeStop = num;
+  const el = sidebarItemMap[num];
+  if (el) {
+    el.classList.add('active');
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  const marker = markerMap[num];
+  if (marker) marker.setIcon(createNumberedIcon(num, true));
+}
+
+function activateExcursion(name) {
+  if (activeStop !== null) {
+    const prev = sidebarItemMap[activeStop];
+    if (prev) prev.classList.remove('active');
+    const prevMarker = markerMap[activeStop];
+    if (prevMarker) prevMarker.setIcon(createNumberedIcon(activeStop, false));
+    activeStop = null;
+  }
+  if (activeExcursion !== null) {
+    const prev = sidebarExcursionMap[activeExcursion];
+    if (prev) prev.classList.remove('active');
+    const prevMarker = excursionMarkerMap[activeExcursion];
+    if (prevMarker) prevMarker.setIcon(createExcursionIcon(EXCURSIONS.find(e=>e.name===activeExcursion)?.icon, false));
+  }
+
+  if (activeExcursion === name) { activeExcursion = null; return; }
+  activeExcursion = name;
+  const el = sidebarExcursionMap[name];
+  if (el) {
+    el.classList.add('active');
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  const excursion = EXCURSIONS.find(e => e.name === name);
+  const marker = excursionMarkerMap[name];
+  if (marker) marker.setIcon(createExcursionIcon(excursion?.icon, true));
+}
+
+const sidebar = document.getElementById('sidebar');
+const excursionSection = sidebar.querySelector('.excursion-section');
+
+STOPS.forEach(stop => {
+  const item = document.createElement('div');
+  item.className = 'stop-item';
+  item.innerHTML = `
+    <div class="stop-badge">${stop.num}</div>
+    <div class="stop-content">
+      <div class="stop-name">${stop.name}</div>
+      <div class="stop-highlight">${stop.highlight}</div>
+      <div class="stop-desc">${stop.desc}</div>
+    </div>
+  `;
+  item.addEventListener('click', () => {
+    activateStop(stop.num);
+    map.setView([stop.lat, stop.lon], 12, { animate: true });
+    markerMap[stop.num]?.openPopup();
+    collapseDrawer();
+  });
+  sidebar.insertBefore(item, excursionSection);
+  sidebarItemMap[stop.num] = item;
+
+  const marker = L.marker([stop.lat, stop.lon], {
+    icon: createNumberedIcon(stop.num, false),
+    zIndexOffset: 200,
+  }).addTo(map);
+  marker.bindPopup(popupContent(stop), { maxWidth: 300 });
+  marker.on('click', () => activateStop(stop.num));
+  markerMap[stop.num] = marker;
+});
+
+EXCURSIONS.forEach(exc => {
+  const item = document.createElement('div');
+  item.className = 'stop-item';
+  item.innerHTML = `
+    <div class="excursion-badge">${excursionEmoji(exc.icon)}</div>
+    <div class="stop-content">
+      <div class="stop-name">${exc.name}</div>
+      <div class="stop-highlight">${exc.highlight}</div>
+      <div class="stop-desc">${exc.desc}</div>
+    </div>
+  `;
+  item.addEventListener('click', () => {
+    activateExcursion(exc.name);
+    map.setView([exc.lat, exc.lon], 12, { animate: true });
+    excursionMarkerMap[exc.name]?.openPopup();
+    collapseDrawer();
+  });
+  excursionSection.appendChild(item);
+  sidebarExcursionMap[exc.name] = item;
+
+  const marker = L.marker([exc.lat, exc.lon], {
+    icon: createExcursionIcon(exc.icon, false),
+    zIndexOffset: 100,
+  }).addTo(map);
+  marker.bindPopup(popupContent(exc), { maxWidth: 300 });
+  marker.on('click', () => activateExcursion(exc.name));
+  excursionMarkerMap[exc.name] = marker;
+});
+</script>
+</body>
+</html>
