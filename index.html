@@ -472,18 +472,21 @@ const STOPS = [
 ];
 
 const EXCURSIONS = [
-  {name: 'Blue Zone Cooking Workshop', lat: 40.9230, lon: 9.4980,
-    desc: "A morning with a Sardinian nonna in Olbia. Learn to make malloreddus, fregola, and culurgiones the way they've been made for five generations. One of the five places on earth where people regularly live past 100 — the food is the reason.",
-    highlight: 'Blue Zone · Pre-board', icon: 'food'},
-  {name: 'Thalasso Spa Capo d\'Orso', lat: 41.2050, lon: 9.3700,
-    desc: "Saltwater pools cut into the granite at one of the most considered spa resorts on the island. Sauna, massage, lunch on the terrace looking across to La Maddalena. Half a day, full reset.",
-    highlight: 'Spa day · Saltwater pools', icon: 'spa'},
-  {name: 'Bonifacio Citadel', lat: 41.3900, lon: 9.1500,
-    desc: "Climb the King of Aragon's staircase — 187 steps cut into the chalk cliff. Walk the haute ville's narrow lanes, an espresso in the place overlooking the strait, a glass of Patrimonio at sunset.",
-    highlight: 'Corsica · Old town walk', icon: 'castle'},
-  {name: 'Cantina Murales Wine Tasting', lat: 40.9280, lon: 9.4950,
-    desc: "Friday morning before flights — a tasting at a family-run Vermentino producer outside Olbia. Three wines, local cheese, the story of how the vines came back after the fires. A proper Sardinian farewell.",
-    highlight: 'Friday return · Vermentino tasting', icon: 'wine'}
+  {name: 'Blue Zone Cooking Workshop', lat: 40.3880, lon: 9.6110,
+    desc: "Pre-board morning, inland from Orosei. A Sardinian nonna teaches malloreddus, fregola, culurgiones — the recipes that have kept this region one of the five Blue Zones on earth. Followed by a long farm lunch. Transfers included from the marina.",
+    highlight: 'Pre-board · Blue Zone · Galtelli', icon: 'food'},
+  {name: "Thalasso Spa Capo d'Orso", lat: 41.1840, lon: 9.3920,
+    desc: "Saltwater pools cut into the granite at Cala Capra. Sauna, massage, lunch on the terrace looking across to La Maddalena. Half a day, full reset. Day 3 — paired with morning yoga at Liscia di Vacca and dinner at Brezza di Mare in Cannigione.",
+    highlight: 'Day 3 · Saltwater pools', icon: 'spa'},
+  {name: 'Bonifacio Citadel Walk', lat: 41.3880, lon: 9.1580,
+    desc: "Day 4 option A. Climb the King of Aragon's staircase — 187 steps cut into the chalk cliff. Walk the haute ville's narrow lanes, an espresso in the place overlooking the strait, a glass of Patrimonio at sunset.",
+    highlight: 'Day 4 option A · Old town', icon: 'castle'},
+  {name: 'Domaine Zuria Winery', lat: 41.4050, lon: 9.1800,
+    desc: "Day 4 option B. Family organic vineyard on the limestone plateau north of Bonifacio. Cellar visit, tasting of Sciaccarellu reds and Vermentinu whites, local delicacies. 2-2.5 hours, taxi from marina included. Two tiers: €85 pp (tasting + cellar) or €115 pp (with vineyard hike).",
+    highlight: 'Day 4 option B · Corsican wines', icon: 'wine'},
+  {name: 'Capichera Wine Tasting', lat: 41.0398, lon: 9.3838,
+    desc: "Friday return — optional Sardinian wine tasting on the way back to Porto Rotondo. Capichera is the original cult Vermentino producer, nestled among Gallura's granite. Tasting + farm picnic. Best if you skipped the Bonifacio winery on Tuesday.",
+    highlight: 'Friday return · Vermentino', icon: 'grapes'}
 ];
 
 // ── Route coordinates from Navionics GPX export (254 waypoints) ───────────────
@@ -657,6 +660,7 @@ function excursionEmoji(icon) {
   if (icon === 'spa') return '♨';
   if (icon === 'castle') return '🏰';
   if (icon === 'wine') return '🍷';
+  if (icon === 'grapes') return '🍇';
   return '◆';
 }
 
