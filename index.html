@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sardinia &amp; Corsica Sailing Route — Porto Rotondo to the Maddalena Archipelago</title>
+<title>Sailing the Wild Coasts of Sardinia &amp; Corsica</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: 'Lato', system-ui, sans-serif;
-    background: #f5f0e8;
-    color: #3a2e22;
+    font-family: 'Mulish', system-ui, sans-serif;
+    background: #fdf3f6;
+    color: #444257;
     height: 100vh;
     height: 100dvh;
     min-height: -webkit-fill-available;
@@ -24,8 +24,8 @@
   }
 
   .map-header {
-    background: #1a2f3a;
-    color: #f5f0e8;
+    background: #343854;
+    color: #fdf3f6;
     padding: 14px 24px;
     display: flex;
     align-items: baseline;
@@ -38,11 +38,11 @@
     font-size: 1.35rem;
     font-weight: 600;
     letter-spacing: 0.02em;
-    color: #f5f0e8;
+    color: #fdf3f6;
   }
   .map-header .subtitle {
     font-size: 0.8rem;
-    color: #c9bfa8;
+    color: #bbb7b0;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
@@ -56,8 +56,8 @@
   .sidebar {
     width: 320px;
     min-width: 260px;
-    background: #fffdf7;
-    border-right: 1px solid #e5ddd0;
+    background: #ffffff;
+    border-right: 1px solid #ece7e1;
     overflow-y: auto;
     flex-shrink: 0;
     display: flex;
@@ -70,9 +70,9 @@
     font-weight: 600;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: #9a8470;
+    color: #9c9892;
     padding: 16px 20px 8px;
-    border-bottom: 1px solid #f0ebe0;
+    border-bottom: 1px solid #ece7e1;
   }
 
   .stop-item {
@@ -81,23 +81,23 @@
     gap: 14px;
     padding: 14px 20px;
     cursor: pointer;
-    border-bottom: 1px solid #f0ebe0;
+    border-bottom: 1px solid #ece7e1;
     transition: background 0.15s;
     position: relative;
   }
-  .stop-item:hover { background: #fdf6ec; }
+  .stop-item:hover { background: #f9f4ee; }
   .stop-item.active {
-    background: #fdf6ec;
-    border-left: 3px solid #c4892a;
+    background: #f9f4ee;
+    border-left: 3px solid #75716b;
   }
 
   .stop-badge {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: #c4892a;
+    background: #75716b;
     border: 2.5px solid #fff;
-    box-shadow: 0 0 0 1.5px #c4892a;
+    box-shadow: 0 0 0 1.5px #75716b;
     color: #fff;
     font-size: 0.8rem;
     font-weight: 700;
@@ -112,9 +112,9 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: #5c7a5e;
+    background: #6a6f8f;
     border: 2.5px solid #fff;
-    box-shadow: 0 0 0 1.5px #5c7a5e;
+    box-shadow: 0 0 0 1.5px #6a6f8f;
     color: #fff;
     font-size: 0.85rem;
     display: flex;
@@ -129,12 +129,12 @@
     font-family: 'Cormorant Garamond', Georgia, serif;
     font-size: 1rem;
     font-weight: 600;
-    color: #2a1f14;
+    color: #1c1f39;
     line-height: 1.2;
   }
   .stop-highlight {
     font-size: 0.72rem;
-    color: #c4892a;
+    color: #75716b;
     letter-spacing: 0.04em;
     margin-top: 2px;
     font-weight: 700;
@@ -142,7 +142,7 @@
   }
   .stop-desc {
     font-size: 0.8rem;
-    color: #6a5a4a;
+    color: #75716b;
     line-height: 1.5;
     margin-top: 6px;
     display: none;
@@ -150,7 +150,7 @@
   .stop-item.active .stop-desc { display: block; }
 
   .excursion-section {
-    border-top: 2px solid #e5ddd0;
+    border-top: 2px solid #ece7e1;
     margin-top: auto;
   }
 
@@ -162,12 +162,12 @@
   }
 
   .numbered-marker {
-    background: #c4892a;
+    background: #75716b;
     border: 3px solid #ffffff;
-    box-shadow: 0 0 0 2px #c4892a, 0 2px 8px rgba(0,0,0,0.35);
+    box-shadow: 0 0 0 2px #75716b, 0 2px 8px rgba(0,0,0,0.35);
     border-radius: 50%;
     color: #ffffff;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Mulish', sans-serif;
     font-size: 13px;
     font-weight: 700;
     display: flex;
@@ -183,9 +183,9 @@
   }
 
   .excursion-marker {
-    background: #5c7a5e;
+    background: #6a6f8f;
     border: 3px solid #ffffff;
-    box-shadow: 0 0 0 2px #5c7a5e, 0 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 0 0 2px #6a6f8f, 0 2px 8px rgba(0,0,0,0.3);
     border-radius: 50%;
     color: #ffffff;
     font-size: 14px;
@@ -202,8 +202,8 @@
   }
 
   .leaflet-popup-content-wrapper {
-    background: #fffdf7;
-    border: 1px solid #e5ddd0;
+    background: #ffffff;
+    border: 1px solid #ece7e1;
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     padding: 0;
@@ -218,12 +218,12 @@
     font-family: 'Cormorant Garamond', Georgia, serif;
     font-size: 1.1rem;
     font-weight: 600;
-    color: #2a1f14;
+    color: #1c1f39;
     margin-bottom: 4px;
   }
   .popup-highlight {
     font-size: 0.7rem;
-    color: #c4892a;
+    color: #75716b;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -231,10 +231,10 @@
   }
   .popup-desc {
     font-size: 0.82rem;
-    color: #5a4a3a;
+    color: #58554f;
     line-height: 1.55;
   }
-  .leaflet-popup-tip { background: #fffdf7; }
+  .leaflet-popup-tip { background: #ffffff; }
 
   .map-tint {
     position: absolute;
@@ -250,12 +250,12 @@
     bottom: 20px;
     right: 20px;
     background: rgba(255, 253, 247, 0.95);
-    border: 1px solid #e5ddd0;
+    border: 1px solid #ece7e1;
     border-radius: 8px;
     padding: 12px 16px;
     z-index: 500;
     font-size: 0.76rem;
-    color: #5a4a3a;
+    color: #58554f;
     box-shadow: 0 2px 12px rgba(0,0,0,0.1);
   }
   .legend-item {
@@ -312,7 +312,7 @@
       height: 52px;
       max-height: 62%;
       border-right: none;
-      border-top: 1px solid #e5ddd0;
+      border-top: 1px solid #ece7e1;
       border-bottom: none;
       border-radius: 14px 14px 0 0;
       box-shadow: 0 -3px 20px rgba(0,0,0,0.13);
@@ -334,7 +334,7 @@
       height: 52px;
       flex-shrink: 0;
       cursor: pointer;
-      background: #fffdf7;
+      background: #ffffff;
       border-radius: 14px 14px 0 0;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
@@ -357,12 +357,12 @@
     .drawer-label {
       font-size: 0.78rem;
       font-weight: 700;
-      color: #3a2e22;
+      color: #444257;
       letter-spacing: 0.03em;
     }
     .drawer-arrow {
       font-size: 0.85rem;
-      color: #9a8470;
+      color: #9c9892;
       transition: transform 0.3s;
     }
     .drawer-open .drawer-arrow {
@@ -399,8 +399,8 @@
 <body>
 
 <div class="map-header">
-  <h1>Sardinia &amp; Corsica — Maddalena Archipelago</h1>
-  <span class="subtitle">7-day sailing route</span>
+  <h1>Sailing the Wild Coasts of Sardinia &amp; Corsica</h1>
+  <span class="subtitle">September 10–18, 2027</span>
 </div>
 
 <div class="map-wrapper">
@@ -421,15 +421,15 @@
     <div class="map-tint"></div>
     <div class="map-legend" id="map-legend">
       <div class="legend-item">
-        <div class="legend-dot" style="background:#c4892a; box-shadow:0 0 0 1px #c4892a;"></div>
+        <div class="legend-dot" style="background:#75716b; box-shadow:0 0 0 1px #75716b;"></div>
         <span>Sailing anchorage</span>
       </div>
       <div class="legend-item">
-        <div class="legend-dot" style="background:#5c7a5e; box-shadow:0 0 0 1px #5c7a5e;"></div>
+        <div class="legend-dot" style="background:#6a6f8f; box-shadow:0 0 0 1px #6a6f8f;"></div>
         <span>Land excursion</span>
       </div>
       <div class="legend-item">
-        <div class="legend-line" style="background:#c4892a;"></div>
+        <div class="legend-line" style="background:#75716b;"></div>
         <span>Sailing route</span>
       </div>
     </div>
@@ -440,50 +440,50 @@
 // ── Data ──────────────────────────────────────────────────────────────────────
 const STOPS = [
   {num: 1, name: 'Porto Rotondo', lat: 41.0264, lon: 9.5478,
-    desc: "Your home base. Board the Bali 5.4 in this elegant marina, stow your kit, and settle into the rhythm of the sea. Twenty-five minutes from Olbia airport — by lunch you're on the water.",
-    highlight: 'Embarkation · Bali 5.4 base'},
+    desc: "Day 1 hotel stay + Day 2 embarkation. The 5-star Hotel Sporting on the waterfront for arrival night, welcome dinner at Il Patio. Next morning the Bali 5.4 catamarans are waiting at the marina.",
+    highlight: 'Days 1–2 · Hotel & embarkation'},
   {num: 2, name: 'Golfo Aranci', lat: 40.9928, lon: 9.6094,
-    desc: "An easy first sail south to a quiet bay tucked behind the headland. Chef's opening dinner on board as the sun drops. The week begins here, slowly, on purpose.",
-    highlight: 'Anchor night 1 · Opening dinner'},
+    desc: "Day 2 first anchorage. After embarkation and a debriefing with the captains, an easy first sail to this quiet bay behind the headland. Swim, settle in, chef's opening dinner on deck as the sun drops.",
+    highlight: 'Day 2 · First anchorage'},
   {num: 3, name: 'Liscia di Vacca', lat: 41.1419, lon: 9.5278,
-    desc: "Costa Smeralda's quietest stretch of white sand, ringed by granite and juniper. Beach yoga at dawn, swim before breakfast. The kind of morning that recalibrates everything.",
-    highlight: 'Anchor night 2 · Beach yoga'},
+    desc: "Day 3 anchorage. Costa Smeralda's quietest stretch — white sand, granite, juniper. Beach yoga in a shallow cove in the morning. Dinner ashore at Tanit, a chic harbour-view restaurant with elevated seafood.",
+    highlight: 'Day 3 · Beach yoga · Tanit dinner'},
   {num: 4, name: "Capo d'Orso", lat: 41.2128, lon: 9.3839,
-    desc: "Day stop at the bear-shaped granite cape near Palau. Saltwater pools at the Thalasso resort, lunch on the terrace, an afternoon spa session before sailing back to Cannigione for the night.",
-    highlight: 'Day stop · Thalasso spa & lunch'},
+    desc: "Day 4 afternoon stop. Tender ashore at the bear-shaped granite cape — the 5-star Capo d'Orso hotel for Thalasso hydrotherapy, treatment, and lunch on the terrace before sailing on to Cannigione.",
+    highlight: 'Day 4 · Thalasso afternoon'},
   {num: 5, name: 'Cannigione', lat: 41.1067, lon: 9.4400,
-    desc: "Anchor in the deep gulf of Arzachena. A working fishing town with a quayside dinner spot the locals trust — fresh catch, no menu in English, no rush.",
-    highlight: 'Anchor night 3 · Quayside dinner'},
+    desc: "Day 4 evening anchorage. Deep in the Gulf of Arzachena — a fishing town famous for seafood. Dinner at Brezza di Mare: red shrimp, oysters, spaghetti with bottarga, lemon risotto, sea views.",
+    highlight: 'Day 4 · Brezza di Mare dinner'},
   {num: 6, name: 'Bonifacio', lat: 41.3867, lon: 9.1583,
-    desc: "The crossing into Corsica — a long sail across the Strait of Bonifacio with the citadel rising from chalk cliffs in the distance. Marina mooring directly beneath the old town. Walk the haute ville at sunset.",
-    highlight: 'Marina night 4 · Citadel walk'},
+    desc: "Day 5 in Corsica. Cross the windy Strait of Bonifacio toward the white limestone cliffs. Marina mooring directly beneath the citadel. Walking tour of the haute ville, free time, then dinner at Da Passano — Michelin-recommended modern Corsican wine bar.",
+    highlight: 'Day 5 · Corsica · Da Passano'},
   {num: 7, name: 'Lavezzi Islands', lat: 41.3433, lon: 9.2567,
-    desc: "A granite archipelago floating in lagoon-clear water between Corsica and Sardinia. Drop anchor over white sand, snorkel through the reserve, lunch on the foredeck. One of the loveliest stops of the week.",
-    highlight: 'Day stop · Snorkel & swim'},
+    desc: "Day 6 mid-day stop. A granite archipelago in lagoon-clear water — some of the best snorkeling in the region. Drop anchor over white sand, snorkel through the reserve, lunch on the foredeck.",
+    highlight: 'Day 6 · Snorkel reserve'},
   {num: 8, name: 'La Maddalena', lat: 41.2117, lon: 9.4083,
-    desc: "Marina mooring in the main town of the archipelago. Walk the pastel waterfront, a proper Sardinian dinner ashore — pasta with bottarga, local Vermentino, gelato on the way back to the boat.",
-    highlight: 'Marina night 5 · Town dinner'},
+    desc: "Day 6 evening. Marina mooring in the pastel-painted main town. Vibrant evening atmosphere. Dinner at La Porta Stretta, a small intimate eatery in the old town with simple, considered Sardinian dishes.",
+    highlight: 'Day 6 · La Porta Stretta'},
   {num: 9, name: 'Spargi', lat: 41.2350, lon: 9.3350,
-    desc: "Cala Corsara — one of the most photographed bays in Italy. Pink-tinged granite, water the colour of mint. Beach yoga in the morning, paddleboard in the cala, anchor for the night.",
-    highlight: 'Anchor night 6 · Beach yoga'},
+    desc: "Day 7 morning. Cala Corsara — pink-tinged granite, mint-coloured water, one of the most photographed bays in Italy. Beach yoga on white sand, paddleboard the cala, snorkel around the boat.",
+    highlight: 'Day 7 · Morning yoga'},
   {num: 10, name: 'Caprera Bay', lat: 41.2150, lon: 9.4767,
-    desc: "Cala Coticcio — 'Little Tahiti'. The farewell anchorage, on-board feast with everything the chef has been saving: bottarga, suckling pig, mirto. Last swim under the stars before sailing back at dawn.",
-    highlight: 'Anchor night 7 · Farewell feast'}
+    desc: "Day 7 sunset anchor + Day 8 morning. Cala Coticcio — 'Little Tahiti'. The farewell anchorage: champagne and oysters at sunset, on-board feast cooked by the chef with wines to match. Day 8 morning yoga and a walk to the viewpoint before sailing south to Porto Rotondo.",
+    highlight: 'Day 7–8 · Farewell anchor'}
 ];
 
 const EXCURSIONS = [
-  {name: 'Blue Zone Cooking Workshop', lat: 40.3880, lon: 9.6110,
-    desc: "Pre-board morning, inland from Orosei. A Sardinian nonna teaches malloreddus, fregola, culurgiones — the recipes that have kept this region one of the five Blue Zones on earth. Followed by a long farm lunch. Transfers from the marina included.",
-    highlight: 'Pre-board · Blue Zone', icon: 'food'},
+  {name: 'Blue Zone Cooking Class', lat: 40.9270, lon: 9.1930,
+    desc: "Day 2 — Sardinia is one of the seven Blue Zones. A locally-led class inland in Gallura: mix water and semolina to make ancient pasta in a traditional stazzo farmhouse, learn what the centenarians eat, then a long lunch together with wine. A short visit to the Nuragic Giants' Tomb of Sa Pascaredda before returning to the marina to board.",
+    highlight: 'Day 2 · Gallura · Pasta workshop', icon: 'food'},
   {name: "Thalasso Spa Capo d'Orso", lat: 41.1840, lon: 9.3920,
-    desc: "Saltwater pools cut into the granite at Cala Capra. Sauna, massage, lunch on the terrace looking across to La Maddalena. Half a day, full reset. Day 3 — paired with morning yoga at Liscia di Vacca and dinner at Brezza di Mare in Cannigione.",
-    highlight: 'Day 3 · Saltwater pools', icon: 'spa'},
-  {name: 'Bonifacio Citadel Walk', lat: 41.3880, lon: 9.1580,
-    desc: "Day 4 in Corsica. Climb the King of Aragon's staircase — 187 steps cut into the chalk cliff. Walk the haute ville's narrow lanes, an espresso in the place overlooking the strait, a glass of Patrimonio at sunset.",
-    highlight: 'Day 4 · Old town walk', icon: 'castle'},
-  {name: 'Sardinian Wine Tasting', lat: 40.9788, lon: 9.4918,
-    desc: "Friday return — a tasting at a family-run Vermentino producer just outside Olbia. Three tiers (3/5/7 wines) with local cheeses and charcuterie, optional farm-animal walk, optional picnic. A proper Sardinian farewell before the airport.",
-    highlight: 'Friday return · Vermentino', icon: 'wine'}
+    desc: "Day 4. The 5-star Capo d'Orso hotel — Thalasso hydrotherapy session, treatment of your choice, lunch on the terrace looking across to La Maddalena. A real reset day before sailing on to Cannigione for dinner at Brezza di Mare.",
+    highlight: 'Day 4 · 5-star Thalasso', icon: 'spa'},
+  {name: 'Bonifacio Old Town Walk', lat: 41.3880, lon: 9.1580,
+    desc: "Day 5 in Corsica. Walking tour of the historic haute ville and Citadel of Cliffs (built 828 AD). The old town overlooks the Strait of Bonifacio — Sardinia visible on the horizon. Free time for shopping. Dinner at Da Passano, a Michelin-recommended modern Corsican wine bar.",
+    highlight: 'Day 5 · Cliffside old town', icon: 'castle'},
+  {name: 'Sardinian Winery Stop', lat: 41.0398, lon: 9.3838,
+    desc: "Day 7 — a special stop at a Sardinian winery for a short tour and tasting on the way back through the Maddalena Archipelago. Followed by sunset at one of the most beautiful anchorages in the area, and a Sardinian feast on board cooked by the chef with wines to match.",
+    highlight: 'Day 7 · Tour & tasting', icon: 'wine'}
 ];
 
 // ── Route coordinates from Navionics GPX export (254 waypoints) ───────────────
@@ -572,7 +572,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r
 }).addTo(map);
 
 const routeLine = L.polyline(ROUTE_COORDS, {
-  color: '#c4892a',
+  color: '#75716b',
   weight: 3,
   opacity: 0.85,
   smoothFactor: 1.5,
